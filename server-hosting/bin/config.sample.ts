@@ -7,6 +7,9 @@
 //     account: '',
 //     // prefix for all resources in this app
 //     prefix: 'SatisfactoryHosting',
+//     // set to false if you don't want an api to
+//     // restart game server and true if you do
+//     restartApi: false,
 //
 //     // optional parameters
 //
@@ -18,4 +21,9 @@
 //     // Create a vpc and it's id here
 //     // or leave it empty to use default vpc
 //     vpcId: '',
+//     // specify server subnet
+//     // leave blank (preferred option) for auto-placement
+//     // If vpc is given specify subnet for that vpc
+//     // If vpc is not given specify subnet for default vpc
+//     subnetId: '',
 // };

@@ -92,5 +92,5 @@ EOF
 systemctl enable auto-shutdown
 systemctl start auto-shutdown
 
-# automated backups to s3 every 5 minutes (current disabled because s3 bucket needs to be passed in)
+# automated backups to s3 every 5 minutes
 su - ubuntu -c "crontab -l -e ubuntu | { cat; echo \"*/5 * * * * aws s3 sync --acl public-read /home/ubuntu/.config/Epic/FactoryGame/Saved/SaveGames/server $S3_SAVE_BUCKET\"; } | crontab -"

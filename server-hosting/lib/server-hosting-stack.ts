@@ -1,10 +1,12 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { Duration, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Config } from '../bin/config';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3_assets from 'aws-cdk-lib/aws-s3-assets';
-import {readFileSync} from 'fs';
+import * as lambda_nodejs from 'aws-cdk-lib/aws-lambda-nodejs';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as apigw from 'aws-cdk-lib/aws-apigateway';
 
 export class ServerHostingStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -32,7 +34,23 @@ export class ServerHostingStack extends Stack {
       }
     }
 
+    let publicOrLookupSubnet = (subnetId: string): ec2.SubnetSelection => {
+      // if subnet id is given select it
+      if (subnetId) {
+        return {
+          subnets: [
+            ec2.Subnet.fromSubnetId(this, `${Config.prefix}ServerSubnet`, subnetId)
+          ]
+        };
+
+        // else use any available public subnet
+      } else {
+        return { subnetType: ec2.SubnetType.PUBLIC };
+      }
+    }
+
     const vpc = lookUpOrDefaultVpc(Config.vpcId);
+    const vpcSubnets = publicOrLookupSubnet(Config.subnetId);
 
     // configure security group to allow ingress access to game ports
     const securityGroup = new ec2.SecurityGroup(this, `${prefix}ServerSecurityGroup`, {
@@ -59,9 +77,8 @@ export class ServerHostingStack extends Stack {
         }
       ],
       // server needs a public ip to allow connections
-      vpcSubnets: {
-        subnetType: ec2.SubnetType.PUBLIC,
-      },
+      vpcSubnets,
+      userDataCausesReplacement: true,
       vpc,
       securityGroup,
     })
@@ -89,16 +106,17 @@ export class ServerHostingStack extends Stack {
     // Configure instance startup
     //////////////////////////////
 
-    // package startup script and grant read access to server
+    // add aws cli
+    // needed to download install script asset and
+    // perform backups to s3
+    server.userData.addCommands('sudo apt-get install unzip -y')
     server.userData.addCommands('curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && ./aws/install')
 
-    const startupScript = new s3_assets.Asset(this, 'Asset', {
-      path: '../install/install.sh'
+    // package startup script and grant read access to server
+    const startupScript = new s3_assets.Asset(this, `${Config.prefix}InstallAsset`, {
+      path: '../scripts/install.sh'
     });
     startupScript.grantRead(server.role);
-
-    const userDataScript = readFileSync('../install/install.sh', 'utf8');
-    server.addUserData(userDataScript)
 
     // download and execute startup script
     // with save bucket name as argument
@@ -110,5 +128,34 @@ export class ServerHostingStack extends Stack {
       filePath: localPath,
       arguments: `${savesBucket.bucketName}`
     });
+
+    //////////////////////////////
+    // Add api to start server
+    //////////////////////////////
+
+    if (Config.restartApi && Config.restartApi === true) {
+      const startServerLambda = new lambda_nodejs.NodejsFunction(this, `${Config.prefix}StartServerLambda`, {
+        entry: './lib/lambda/index.ts',
+        description: "Restart game server",
+        timeout: Duration.seconds(10),
+        environment: {
+          INSTANCE_ID: server.instanceId
+        }
+      })
+
+      startServerLambda.addToRolePolicy(new iam.PolicyStatement({
+        actions: [
+          'ec2:StartInstances',
+        ],
+        resources: [
+          `arn:aws:ec2:*:${Config.account}:instance/${server.instanceId}`,
+        ]
+      }))
+
+      new apigw.LambdaRestApi(this, `${Config.prefix}StartServerApi`, {
+        handler: startServerLambda,
+        description: "Trigger lambda function to start server",
+      })
+    }
   }
 }
