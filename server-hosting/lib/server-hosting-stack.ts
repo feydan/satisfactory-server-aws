@@ -3,7 +3,7 @@ import { Construct } from 'constructs';
 import { Config } from '../bin/config';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as iam from 'aws-cdk-lib/aws-iam';
+import * as s3_assets from 'aws-cdk-lib/aws-s3-assets';
 
 export class ServerHostingStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -11,6 +11,10 @@ export class ServerHostingStack extends Stack {
 
     // prefix for all resources in this stack
     const prefix = Config.prefix;
+
+    //////////////////////////////////////////
+    // Configure server, network and security
+    //////////////////////////////////////////
 
     let lookUpOrDefaultVpc = (vpcId: string): ec2.IVpc => {
       // lookup vpc if given
@@ -60,6 +64,10 @@ export class ServerHostingStack extends Stack {
       securityGroup,
     })
 
+    //////////////////////////////
+    // Configure save bucket
+    //////////////////////////////
+
     let findOrCreateBucket = (bucketName: string): s3.IBucket => {
       // if bucket already exists lookup and use the bucket
       if (bucketName) {
@@ -75,18 +83,25 @@ export class ServerHostingStack extends Stack {
     const savesBucket = findOrCreateBucket(Config.bucketName);
     savesBucket.grantReadWrite(server.role);
 
-    // allow server permission to shut itself down
-    server.role.attachInlinePolicy(new iam.Policy(this, `${prefix}`, {
-      statements: [
-        new iam.PolicyStatement({
-          actions: [
-            "ec2:StopInstances"
-          ],
-          resources: [
-            `arn:aws:ec2:*:${Config.account}:instance/${server.instanceId}`
-          ]
-        })
-      ]
-    }))
+    //////////////////////////////
+    // Configure instance startup
+    //////////////////////////////
+
+    // package startup script and grant read access to server
+    const startupScript = new s3_assets.Asset(this, 'Asset', {
+      path: '../../install/install.sh'
+    });
+    startupScript.grantRead(server.role);
+
+    // download and execute startup script
+    // with save bucket name as argument
+    const localPath = server.userData.addS3DownloadCommand({
+      bucket: startupScript.bucket,
+      bucketKey: startupScript.s3ObjectKey,
+    });
+    server.userData.addExecuteFileCommand({
+      filePath: localPath,
+      arguments: `${savesBucket.bucketName}`
+    });
   }
 }
