@@ -1,19 +1,21 @@
 #!/bin/sh
 
 # install steamcmd: https://developer.valvesoftware.com/wiki/SteamCMD?__cf_chl_jschl_tk__=pmd_WNQPOiK18.h0rf16RCYrARI2s8_84hUMwT.7N1xHYcs-1635248050-0-gqNtZGzNAiWjcnBszQiR#Linux.2FmacOS)
-useradd -m steam
-
 add-apt-repository multiverse
 dpkg --add-architecture i386
 apt update
 
-apt install lib32gcc1 steamcmd
+# Needed to accept steam license without hangup
+echo steam steam/question select "OK" | debconf-set-selections
+
+apt install -y lib32gcc1 steamcmd
 
 # install satisfactory: https://satisfactory.fandom.com/wiki/Dedicated_servers
-steamcmd +login anonymous +app_update 1690800 -beta experimental validate +quit
+# note, we are switching users because steam doesn't recommend running steamcmd as root
+su - ubuntu -c "steamcmd +login anonymous +app_update 1690800 -beta experimental validate +quit"
 
 # enable as server so it stays up and start: https://satisfactory.fandom.com/wiki/Dedicated_servers/Running_as_a_Service
-cat << EOF > /etc/systemd/system/satisfactory.service
+cat << 'EOF' > /etc/systemd/system/satisfactory.service
 [Unit]
 Description=Satisfactory dedicated server
 Wants=network-online.target
@@ -37,7 +39,7 @@ systemctl enable satisfactory
 systemctl start satisfactory
 
 # enable auto shutdown: https://github.com/feydan/satisfactory-tools/tree/main/shutdown
-cat << EOF > /home/ubuntu/auto-shutdown.sh
+cat << 'EOF' > /home/ubuntu/auto-shutdown.sh
 #!/bin/sh
 
 shutdownIdleMinutes=30
@@ -67,7 +69,7 @@ EOF
 chmod +x /home/ubuntu/auto-shutdown.sh
 chown ubuntu:ubuntu /home/ubuntu/auto-shutdown.sh
 
-cat << EOF > /etc/systemd/system/auto-shutdown.service
+cat << 'EOF' > /etc/systemd/system/auto-shutdown.service
 [Unit]
 Description=Auto shutdown if no one is playing Satisfactory
 After=syslog.target network.target nss-lookup.target network-online.target
@@ -86,4 +88,5 @@ systemctl enable auto-shutdown
 systemctl start auto-shutdown
 
 # automated backups to s3 every 5 minutes (current disabled because s3 bucket needs to be passed in)
-# crontab -l -e ubuntu | { cat; */5 * * * * aws s3 sync --acl public-read /home/ubuntu/.config/Epic/FactoryGame/Saved/SaveGames/server <s3 bucket>; } | crontab -
+# curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && ./aws/install
+# crontab -l -e ubuntu | { cat; */5 * * * * aws s3 sync --acl public-read /home/ubuntu/.config/Epic/FactoryGame/Saved/SaveGames/server $S3_SAVE_BUCKET; } | crontab -
