@@ -1,0 +1,24 @@
+{
+  "name": "satisfactory-start",
+  "version": "1.0.0",
+  "description": "very specific to me, for starting my satisfactory server via a super simple http request",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/feydan/satisfactory-start.git"
+  },
+  "author": "Dan Fey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/feydan/satisfactory-start/issues"
+  },
+  "homepage": "https://github.com/feydan/satisfactory-start#readme",
+  "dependencies": {
+    "@aws-sdk/client-ec2": "^3.39.0"
+  }
+}
