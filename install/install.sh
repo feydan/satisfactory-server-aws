@@ -10,7 +10,8 @@ dpkg --add-architecture i386
 apt update
 
 # Needed to accept steam license without hangup
-echo steam steam/question select "OK" | debconf-set-selections
+echo steam steam/question 'select' "I AGREE" | sudo debconf-set-selections
+echo steam steam/license note '' | sudo debconf-set-selections
 
 apt install -y unzip lib32gcc1 steamcmd
 

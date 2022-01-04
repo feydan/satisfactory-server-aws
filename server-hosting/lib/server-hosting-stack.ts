@@ -4,6 +4,7 @@ import { Config } from '../bin/config';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3_assets from 'aws-cdk-lib/aws-s3-assets';
+import {readFileSync} from 'fs';
 
 export class ServerHostingStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -39,6 +40,7 @@ export class ServerHostingStack extends Stack {
       description: "Allow Satisfactory client to connect to server",
     })
 
+    securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.udp(22), "SSH port")
     securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.udp(7777), "Game port")
     securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.udp(15000), "Beacon port")
     securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.udp(15777), "Query port")
@@ -88,10 +90,15 @@ export class ServerHostingStack extends Stack {
     //////////////////////////////
 
     // package startup script and grant read access to server
+    server.userData.addCommands('curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && ./aws/install')
+
     const startupScript = new s3_assets.Asset(this, 'Asset', {
-      path: '../../install/install.sh'
+      path: '../install/install.sh'
     });
     startupScript.grantRead(server.role);
+
+    const userDataScript = readFileSync('../install/install.sh', 'utf8');
+    server.addUserData(userDataScript)
 
     // download and execute startup script
     // with save bucket name as argument
