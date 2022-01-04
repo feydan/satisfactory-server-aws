@@ -8,7 +8,7 @@ exports.handler = async function (event: any) {
 
   console.log("Attempting to start game server", instanceId);
 
-  client.send(command)
+  return client.send(command)
     .then((res) => {
       console.log(JSON.stringify(res));
       return {
