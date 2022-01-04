@@ -34,12 +34,15 @@ export class ServerHostingStack extends Stack {
       }
     }
 
-    let publicOrLookupSubnet = (subnetId: string): ec2.SubnetSelection => {
+    let publicOrLookupSubnet = (subnetId: string, availabilityZone: string): ec2.SubnetSelection => {
       // if subnet id is given select it
-      if (subnetId) {
+      if (subnetId && availabilityZone) {
         return {
           subnets: [
-            ec2.Subnet.fromSubnetId(this, `${Config.prefix}ServerSubnet`, subnetId)
+            ec2.Subnet.fromSubnetAttributes(this, `${Config.prefix}ServerSubnet`, {
+              availabilityZone,
+              subnetId
+            })
           ]
         };
 
@@ -50,7 +53,7 @@ export class ServerHostingStack extends Stack {
     }
 
     const vpc = lookUpOrDefaultVpc(Config.vpcId);
-    const vpcSubnets = publicOrLookupSubnet(Config.subnetId);
+    const vpcSubnets = publicOrLookupSubnet(Config.subnetId, Config.availabilityZone);
 
     // configure security group to allow ingress access to game ports
     const securityGroup = new ec2.SecurityGroup(this, `${prefix}ServerSecurityGroup`, {
