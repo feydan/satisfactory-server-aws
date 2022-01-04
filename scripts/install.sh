@@ -69,7 +69,7 @@ while [ $isIdle -le 0 ]; do
 done
 
 echo "No activity detected for $shutdownIdleMinutes minutes, shutting down."
-shutdown -h now
+sudo shutdown -h now
 EOF
 chmod +x /home/ubuntu/auto-shutdown.sh
 chown ubuntu:ubuntu /home/ubuntu/auto-shutdown.sh
