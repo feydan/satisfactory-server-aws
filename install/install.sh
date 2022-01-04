@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Note: you must pass a single argument to this script 
+# that is the s3 bucket for your backup save files
+S3_SAVE_BUCKET=$1
+
 # install steamcmd: https://developer.valvesoftware.com/wiki/SteamCMD?__cf_chl_jschl_tk__=pmd_WNQPOiK18.h0rf16RCYrARI2s8_84hUMwT.7N1xHYcs-1635248050-0-gqNtZGzNAiWjcnBszQiR#Linux.2FmacOS)
 add-apt-repository multiverse
 dpkg --add-architecture i386
@@ -8,7 +12,7 @@ apt update
 # Needed to accept steam license without hangup
 echo steam steam/question select "OK" | debconf-set-selections
 
-apt install -y lib32gcc1 steamcmd
+apt install -y unzip lib32gcc1 steamcmd
 
 # install satisfactory: https://satisfactory.fandom.com/wiki/Dedicated_servers
 # note, we are switching users because steam doesn't recommend running steamcmd as root
@@ -88,5 +92,5 @@ systemctl enable auto-shutdown
 systemctl start auto-shutdown
 
 # automated backups to s3 every 5 minutes (current disabled because s3 bucket needs to be passed in)
-# curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && ./aws/install
-# crontab -l -e ubuntu | { cat; */5 * * * * aws s3 sync --acl public-read /home/ubuntu/.config/Epic/FactoryGame/Saved/SaveGames/server $S3_SAVE_BUCKET; } | crontab -
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && ./aws/install
+su - ubuntu -c "crontab -l -e ubuntu | { cat; echo \"*/5 * * * * aws s3 sync --acl public-read /home/ubuntu/.config/Epic/FactoryGame/Saved/SaveGames/server $S3_SAVE_BUCKET\"; } | crontab -"
