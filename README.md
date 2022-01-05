@@ -23,9 +23,9 @@ This is a free and open source project and there are no guarantees that it will 
 
 ## Requirements
 
-- [An AWS Account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
+- [AWS Account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
 - [Git](https://git-scm.com/downloads)
-- [AWS Command Line Interface](https://aws.amazon.com/cli/)
+- [AWS Command Line Interface (cli)](https://aws.amazon.com/cli/)
 - [NodeJs](https://nodejs.org/en/download/)
 
 ## Quick Start
@@ -33,10 +33,10 @@ This is a free and open source project and there are no guarantees that it will 
 1. [Clone this project](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
 2. `npm install`
 3. `npx cdk boostrap <aws account number>/<aws region>` (replace account number and region)
-4. `cp .config.sample.ts .config.ts` (see [Configuration](#configuration))
+4. `cp .config.sample.ts .config.ts` (see [Configuration](#configuration) for customization)
 5. `npx deploy`
 6. Wait for the CloudFormation stack to finish. It may take a few minutes for the server to download/install everything after the stack is finished.
-7. Use the Ec2 instance IP address to connect to your server in Satisfactory Server Manager (see [DNS / IP management](#dns-and-ip-management))
+7. Use the Ec2 instance public IP address to connect to your server in Satisfactory Server Manager (see [DNS / IP management](#dns-and-ip-management))
 8. Start a new game or upload a save
 
 ## Installation
