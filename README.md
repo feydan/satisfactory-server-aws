@@ -11,6 +11,10 @@ This project uses [AWS CDK](https://aws.amazon.com/cdk/) to provision everything
  - Automatic game file backup to s3
  - A Lambda browser endpoint to start the server back up
 
+Why use AWS when you can host for free on your own computer?
+ - If you want to allow friends to play on your server without you, you will have to always leave computer on and the server running continuously, even if you are not playing.  Having it on the cloud frees up your hardware.
+ - Your computer may not have enough resources to host the server and play at the same time.
+
 ### Costs
 If you play on the server 2 hours per day, this setup will cost around $5/month on AWS.
 
