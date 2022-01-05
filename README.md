@@ -9,7 +9,7 @@ This project uses [AWS CDK](https://aws.amazon.com/cdk/) to provision everything
  - Ec2 Instance provisioning
  - Automatic shutdown behavior when not in use (saves $$)
  - Automatic game file backup to s3
- - A Lambda browser endpoint to start the server back up
+ - A Lambda browser endpoint to [start the server back up](#starting-the-server-back-up)
 
 Why use AWS when you can host for free on your own computer?
  - If you want to allow friends to play on your server without you, you will have to always leave computer on and the server running continuously, even if you are not playing.  Having it on the cloud frees up your hardware.
@@ -48,11 +48,14 @@ This assumes you have all requirements and have [configured aws cli](https://doc
 7. Use the Ec2 instance public IP address to connect to your server in Satisfactory Server Manager (see [DNS and IP management](#dns-and-ip-management))
 8. Start a new game or upload a save
 
-### DNS and IP management
+## DNS and IP management
 
 When your ec2 instance shuts down and starts back up, there's no gurantee that the IP address will stay the same.  If it changes, you will have to re-add the server in Server Manager.  There are a couple ways to fix the issue:
 
 1. [Elastic IP](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html) - Create and assign it to your ec2 instance in AWS.  Your Elatic IP will never change, but you will get charged for it when it is *not in use* ($0.001/hour or $3.60/month if never used).  This method also allows you to use your own custom domain address if wish.
 2. Dynamic DNS - Free dynamic DNS services like [DuckDns](https://www.duckdns.org/) provide a way to automatically manage when the IP address changes.  Once setup, you just use their url and they handle everything else behind the scenes.  This method may not allow you to use a custom domain.
 
-### Contributing
+## Starting the server back up
+After deploying, there will be a Lambda setup with Api Gateway.  This provides a url that you (or your friends) can hit in any browser to start the server back up when you want to play.  To find this URL, navigate in AWS to API Gateway -> SatisfactoryHostingStartServerApi -> Dashboard (lefthand menu); the url is at the top next to "Invoke this API at:"
+
+## Contributing
