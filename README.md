@@ -1,5 +1,5 @@
-# satisfactory-tools
-Tools for automating Satisfactory server management on AWS
+# Satisfactory Server AWS
+Automated Satisfactory Dedicated Server management on AWS
 
 ## Intro
 FICSIT Incorporated has provided you with this tool (cost deducted from your existing balance) to assist you with Project Assembly.  This tool can help you collaborate with friends on your factory projects.
@@ -12,7 +12,7 @@ This project uses [AWS CDK](https://aws.amazon.com/cdk/) to provision everying y
  - A Lambda browser endpoint to start the server back up
 
 ### Costs
-If you play on the server 2 hours per day, this setup will cost around $5/month.
+If you play on the server 2 hours per day, this setup will cost around $5/month on AWS.
 
 Since the server automatically shuts down when not in use, you only pay when the server is up and you (or your friends) are actively playing on it.
 
@@ -23,7 +23,21 @@ This is a free and open source project and there are no guarantees that it will 
 
 ## Requirements
 
+- [An AWS Account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
+- [Git](https://git-scm.com/downloads)
+- [AWS Command Line Interface](https://aws.amazon.com/cli/)
+- [NodeJs](https://nodejs.org/en/download/)
+
 ## Quick Start
+
+1. [Clone this project](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+2. `npm install`
+3. `npx cdk boostrap <aws account number>/<aws region>` (replace account number and region)
+4. `cp .config.sample.ts .config.ts` (see [Configuration](#configuration))
+5. `npx deploy`
+6. Wait for the CloudFormation stack to finish. It may take a few minutes for the server to download/install everything after the stack is finished.
+7. Use the Ec2 instance IP address to connect to your server in Satisfactory Server Manager (see [DNS / IP management](#dns-and-ip-management))
+8. Start a new game or upload a save
 
 ## Installation
 
@@ -39,6 +53,6 @@ This is a free and open source project and there are no guarantees that it will 
 
 ## Additional Notes
 
-### DNS / IP management
+### DNS and IP management
 
 ### Contributing
