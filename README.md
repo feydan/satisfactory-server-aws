@@ -34,7 +34,7 @@ This is a free and open source project and there are no guarantees that it will 
 
 ## Configuration
 
-Copy the given `config.sample.ts` file to `config.ts` file. Fill the fields with appropriate values. Explanation for each field is given in file itself.
+Copy the given `server-hosting/config.sample.ts` file to `server-hosting/config.ts` file. Fill the fields with appropriate values. Explanation for each field is given in file itself.
 
 ## Quick Start
 This assumes you have all requirements and have [configured aws cli](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
@@ -42,7 +42,7 @@ This assumes you have all requirements and have [configured aws cli](https://doc
 1. [Clone this project](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
 2. `npm install`
 3. `npx cdk bootstrap <aws account number>/<aws region>` (replace account number and region)
-4. `cp .config.sample.ts .config.ts` (see [Configuration](#configuration) for customization)
+4. `cp server-hosting/.config.sample.ts server-hosting/.config.ts` if you have not done so (see [Configuration](#configuration) for customization)
 5. `npx cdk deploy`
 6. Wait for the CloudFormation stack to finish. It may take a few minutes for the server to download/install everything after the stack is finished.
 7. Use the Ec2 instance public IP address to connect to your server in Satisfactory Server Manager (see [DNS and IP management](#dns-and-ip-management))
