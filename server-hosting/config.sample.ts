@@ -9,7 +9,7 @@
 //     prefix: 'SatisfactoryHosting',
 //     // set to false if you don't want an api to
 //     // restart game server and true if you do
-//     restartApi: false,
+//     restartApi: true,
 //     // Set to true if you want to use Satisfactory Experimental
 //     useExperimentalBuild: false,
 //
