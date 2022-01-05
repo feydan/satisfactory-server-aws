@@ -10,6 +10,8 @@
 //     // set to false if you don't want an api to
 //     // restart game server and true if you do
 //     restartApi: false,
+//     // Set to true if you want to use Satisfactory Experimental
+//     useExperimentalBuild: false,
 //
 //     // optional parameters
 //
@@ -26,4 +28,6 @@
 //     // If vpc is given specify subnet for that vpc
 //     // If vpc is not given specify subnet for default vpc
 //     subnetId: '',
+//     // Needed if subnetId is specified (i.e. us-west-2a)
+//     availabilityZone: ''
 // };

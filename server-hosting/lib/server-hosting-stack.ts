@@ -129,7 +129,7 @@ export class ServerHostingStack extends Stack {
     });
     server.userData.addExecuteFileCommand({
       filePath: localPath,
-      arguments: `${savesBucket.bucketName}`
+      arguments: `${savesBucket.bucketName} ${Config.useExperimentalBuild}`
     });
 
     //////////////////////////////

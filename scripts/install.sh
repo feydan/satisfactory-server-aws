@@ -1,8 +1,12 @@
 #!/bin/sh
 
-# Note: you must pass a single argument to this script 
-# that is the s3 bucket for your backup save files
+# Note: Arguments to this script 
+#  1: string - S3 bucket for your backup save files (required)
+#  2: true|false - whether to use Satisfactory Experimental build (optional, default false)
+# that is the 
 S3_SAVE_BUCKET=$1
+USE_EXPERIMENTAL_BUILD=${2-false}
+
 
 # install steamcmd: https://developer.valvesoftware.com/wiki/SteamCMD?__cf_chl_jschl_tk__=pmd_WNQPOiK18.h0rf16RCYrARI2s8_84hUMwT.7N1xHYcs-1635248050-0-gqNtZGzNAiWjcnBszQiR#Linux.2FmacOS)
 add-apt-repository multiverse
@@ -16,11 +20,16 @@ echo steam steam/license note '' | sudo debconf-set-selections
 apt install -y unzip lib32gcc1 steamcmd
 
 # install satisfactory: https://satisfactory.fandom.com/wiki/Dedicated_servers
+if [ $USE_EXPERIMENTAL_BUILD = "true" ]; then
+    STEAM_INSTALL_SCRIPT="/usr/games/steamcmd +login anonymous +app_update 1690800 -beta experimental validate +quit"
+else
+    STEAM_INSTALL_SCRIPT="/usr/games/steamcmd +login anonymous +app_update 1690800 validate +quit"
+fi
 # note, we are switching users because steam doesn't recommend running steamcmd as root
-su - ubuntu -c "steamcmd +login anonymous +app_update 1690800 -beta experimental validate +quit"
+su - ubuntu -c "$STEAM_INSTALL_SCRIPT"
 
 # enable as server so it stays up and start: https://satisfactory.fandom.com/wiki/Dedicated_servers/Running_as_a_Service
-cat << 'EOF' > /etc/systemd/system/satisfactory.service
+cat << EOF > /etc/systemd/system/satisfactory.service
 [Unit]
 Description=Satisfactory dedicated server
 Wants=network-online.target
@@ -28,7 +37,7 @@ After=syslog.target network.target nss-lookup.target network-online.target
 
 [Service]
 Environment="LD_LIBRARY_PATH=./linux64"
-ExecStartPre=/usr/games/steamcmd +login anonymous +app_update 1690800 -beta experimental validate +quit
+ExecStartPre=$STEAM_INSTALL_SCRIPT
 ExecStart=/home/ubuntu/.steam/steamapps/common/SatisfactoryDedicatedServer/FactoryServer.sh
 User=ubuntu
 Group=ubuntu
