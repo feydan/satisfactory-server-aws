@@ -1,6 +1,6 @@
 import { Duration, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { Config } from '../bin/config';
+import { Config } from './config';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3_assets from 'aws-cdk-lib/aws-s3-assets';
@@ -117,7 +117,7 @@ export class ServerHostingStack extends Stack {
 
     // package startup script and grant read access to server
     const startupScript = new s3_assets.Asset(this, `${Config.prefix}InstallAsset`, {
-      path: '../scripts/install.sh'
+      path: './server-hosting/scripts/install.sh'
     });
     startupScript.grantRead(server.role);
 
@@ -138,7 +138,7 @@ export class ServerHostingStack extends Stack {
 
     if (Config.restartApi && Config.restartApi === true) {
       const startServerLambda = new lambda_nodejs.NodejsFunction(this, `${Config.prefix}StartServerLambda`, {
-        entry: './lib/lambda/index.ts',
+        entry: './server-hosting/lambda/index.ts',
         description: "Restart game server",
         timeout: Duration.seconds(10),
         environment: {

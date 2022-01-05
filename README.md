@@ -35,6 +35,10 @@ This is a free and open source project and there are no guarantees that it will 
 
 ## Configuration
 
+
+
+Copy the given `config.sample.ts` file to `config.ts` file. Fill the fields with appropriate values. Explanation for each field is given in file itself.
+
 ## Deploying
 
 ## Additional Notes
