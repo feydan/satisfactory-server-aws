@@ -7,9 +7,9 @@ FICSIT Incorporated has provided you with this tool (cost deducted from your exi
 This project uses [AWS CDK](https://aws.amazon.com/cdk/) to provision everying you need to host a [Satisfactory Dedicated Server](https://satisfactory.fandom.com/wiki/Dedicated_servers) on AWS.  It includes the following:
  - VPC/Network configuration
  - Ec2 Instance provisioning
- - Automatic shutdown behavior not in use (saves $$)
+ - Automatic shutdown behavior when not in use (saves $$)
  - Automatic game file backup to s3
- - A Lambda browser endpoint you can hit from any browser to start the server back up
+ - A Lambda browser endpoint to start the server back up
 
 ### Costs
 If you play on the server 2 hours per day, this setup will cost around $5/month.
