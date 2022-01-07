@@ -1,0 +1,5 @@
+{
+	"token": "Your Bot Token",
+	"clientId" : "Your App Oauth2 Client Id",
+	"guildId" : "Your Server (Guild) Id"
+}
