@@ -50,6 +50,10 @@ This assumes you have all requirements and have [configured aws cli](https://doc
 7. Use the Ec2 instance public IP address to connect to your server in Satisfactory Server Manager (see [DNS and IP management](#dns-and-ip-management))
 8. Start a new game or upload a save
 
+## Accessing your server
+
+Access to the EC2 instance hosting your Satisfactory server can be done via [Session Manager](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/session-manager.html). External SSH is **blocked** by default at the network level.  
+
 ## DNS and IP management
 
 When your ec2 instance shuts down and starts back up, there's no gurantee that the IP address will stay the same.  If it changes, you will have to re-add the server in Server Manager.  There are a couple ways to fix the issue:
