@@ -7,7 +7,6 @@ import * as s3_assets from 'aws-cdk-lib/aws-s3-assets';
 import * as lambda_nodejs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as apigw from 'aws-cdk-lib/aws-apigateway';
-import {ManagedPolicy} from "aws-cdk-lib/aws-iam";
 
 export class ServerHostingStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -87,7 +86,7 @@ export class ServerHostingStack extends Stack {
     })
 
     // Add Base SSM Permissions, so we can use AWS Session Manager to connect to our server, rather than external SSH.
-    server.role.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'));
+    server.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'));
 
     //////////////////////////////
     // Configure save bucket
