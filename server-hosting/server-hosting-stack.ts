@@ -7,6 +7,7 @@ import * as s3_assets from 'aws-cdk-lib/aws-s3-assets';
 import * as lambda_nodejs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as apigw from 'aws-cdk-lib/aws-apigateway';
+import {ManagedPolicy} from "aws-cdk-lib/aws-iam";
 
 export class ServerHostingStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -61,7 +62,6 @@ export class ServerHostingStack extends Stack {
       description: "Allow Satisfactory client to connect to server",
     })
 
-    securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(22), "SSH port")
     securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.udp(7777), "Game port")
     securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.udp(15000), "Beacon port")
     securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.udp(15777), "Query port")
@@ -85,6 +85,9 @@ export class ServerHostingStack extends Stack {
       vpc,
       securityGroup,
     })
+
+    // Add Base SSM Permissions, so we can use AWS Session Manager to connect to our server, rather than external SSH.
+    server.role.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'));
 
     //////////////////////////////
     // Configure save bucket
