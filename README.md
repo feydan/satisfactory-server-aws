@@ -52,7 +52,7 @@ This assumes you have all requirements and have [configured aws cli](https://doc
 
 ## Accessing your server
 
-Access to the EC2 instance hosting your Satisfactory server can be done via [Session Manager](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/session-manager.html). External SSH is **blocked** by default at the network level.  
+Access to the EC2 instance hosting your Satisfactory server can be done via [Session Manager](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/session-manager.html). External SSH is **blocked** by default at the network level.  Tip: ssm may open /bin/sh, running `bash` can get you to a more familiar bash shell.
 
 ## DNS and IP management
 
