@@ -96,6 +96,9 @@ StandardOutput=journal
 Restart=on-failure
 KillSignal=SIGINT
 WorkingDirectory=/home/ubuntu
+
+[Install]
+WantedBy=multi-user.target
 EOF
 systemctl enable auto-shutdown
 systemctl start auto-shutdown
