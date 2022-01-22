@@ -11,3 +11,6 @@ cdk.context.json
 
 # Configuration
 **/*config.ts
+
+# Exception for JS files under the discord-bot folder
+!server-hosting/discord-bot/**/*.js

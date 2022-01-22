@@ -1,0 +1,15 @@
+[Unit]
+Description=Discord Bot
+
+[Service]
+ExecStart=/path/to/folder/discord-bot/index.js
+Restart=on-failure
+StandardOutput=journal
+User=YOUR_USER
+Group=YOUR_GROUP
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory=/path/to/folder/discord-bot
+
+[Install]
+WantedBy=multi-user.target
