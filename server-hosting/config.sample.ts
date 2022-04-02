@@ -29,5 +29,9 @@ export const Config = {
      // If vpc is not given specify subnet for default vpc
      subnetId: '',
      // Needed if subnetId is specified (i.e. us-west-2a)
-     availabilityZone: ''
+     availabilityZone: '',
+     // The EC2 instance type (https://aws.amazon.com/ec2/instance-types/)
+     // 2 vCPU, 8 GB RAM should be enough for most factories
+     // Default is 'm5a.large'
+     instanceType: ''
 };
