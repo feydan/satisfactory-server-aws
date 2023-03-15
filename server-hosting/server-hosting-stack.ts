@@ -85,6 +85,16 @@ export class ServerHostingStack extends Stack {
       securityGroup,
     })
 
+    if (Config.useEip) {
+      const eip = new ec2.CfnEIP(this, 'IP')
+
+      // Elastic IP reference
+      new ec2.CfnEIPAssociation(this, 'Association', {
+        eip: eip.ref,
+        instanceId: server.instanceId,
+      })
+    }
+
     // Add Base SSM Permissions, so we can use AWS Session Manager to connect to our server, rather than external SSH.
     server.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'));
 
