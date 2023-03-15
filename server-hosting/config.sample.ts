@@ -12,6 +12,8 @@ export const Config = {
      restartApi: true,
      // Set to true if you want to use Satisfactory Experimental
      useExperimentalBuild: false,
+     // Set to true if you want to assign an elastic IP address (EIP)
+     useEip: false,
 
      // optional parameters
 
